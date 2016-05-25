@@ -60,4 +60,27 @@ module Enumerable
 		end
 		return the_count
 	end
+	
+	def my_map
+		result = []
+		if block_given?
+			self.my_each {|item| result << yield(item)}
+		else
+			result = self.to_enum
+		end
+		return result
+	end
+	
+	def my_inject(number = nil)
+		accumulator = number.nil? ? first : number
+		my_each {|item| accumulator = yield(accumulator, item)}
+		return accumulator
+	end
 end	
+
+def multiply_els(input_array)
+	return input_array.my_inject(1) {|product, x| product * x}
+end
+	
+# Tests multiply_els
+# puts multiply_els([2,4,5])
