@@ -61,14 +61,25 @@ module Enumerable
 		return the_count
 	end
 	
-	def my_map
-		result = []
-		if block_given?
-			self.my_each {|item| result << yield(item)}
-		else
-			result = self.to_enum
+	#def my_map
+	#	result = []
+	#	if block_given?
+	#		self.my_each {|item| result << yield(item)}
+	#	else
+	#		result = self.to_enum
+	#	end
+	#	return result
+	#end
+	
+	# Refactored my_map to take a block or proc
+	def my_map(the_proc = nil)
+		return_array = []
+		if (the_proc && block_given?) || (the_proc && !block_given?)
+			self.my_each {|item| return_array << the_proc.call(item)}
+		elsif the_proc.nil? && block_given?
+			self.my_each {|item| return_array << yield(item)}
 		end
-		return result
+		return return_array
 	end
 	
 	def my_inject(number = nil)
@@ -81,6 +92,5 @@ end
 def multiply_els(input_array)
 	return input_array.my_inject(1) {|product, x| product * x}
 end
-	
 # Tests multiply_els
 # puts multiply_els([2,4,5])
